@@ -1,6 +1,7 @@
 import csv
 from package import Package
 
+
 def loadPackageData(fileName, hashTable):
     with open(fileName) as packages:
         packageData = csv.reader(packages, delimiter=',')
@@ -14,7 +15,8 @@ def loadPackageData(fileName, hashTable):
             packageWeight = package[6]
             packageNotes = package[7]
 
-            newPackage = Package(packageID, packageAddress, packageDeadline, packageCity, packageZip, packageWeight, packageNotes)
+            newPackage = Package(packageID, packageAddress, packageDeadline,
+                                 packageCity, packageZip, packageWeight, packageNotes)
             hashTable.insert(packageID, newPackage)
 
 
@@ -28,6 +30,7 @@ def loadDistanceData(fileName):
             distanceArray.append(distance)
     return distanceArray
 
+
 def loadAddressData(fileName):
     addressArray = []
     with open(fileName) as distances:
@@ -38,9 +41,10 @@ def loadAddressData(fileName):
             addressArray.append(distance)
     return addressArray
 
+
 dArray = loadDistanceData('WGUPS Distance Table.csv')
 aArray = loadAddressData('WGUPS Distance Table.csv')
-for rows in dArray:
-    print(rows)
-for rows in aArray:
-    print(rows)
+# for rows in dArray:
+#     print(rows)
+# for rows in aArray:
+#     print(rows)
