@@ -53,7 +53,7 @@ def truckDeliverPackages(truck):
     print(currentAddress)
     miles += float(distanceBetween(currentAddress, hubAddress))
     elapsed = datetime.timedelta(hours=miles / 18)
-
+# check
 selection = input("1. Deliver Packages\n2. View Package Status\n3. Quit\n")
 while(selection != "3"):
     if(selection == "1"):
