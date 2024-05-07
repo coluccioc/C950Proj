@@ -73,14 +73,18 @@ def minDistance(fromAddress, truckPackages):
 
 
 # Delivery Algorithm. Takes a truck object and its start time as arguments
+# Timestamps packages with departure and delivery times
+# Finds nearest package address and delivers that package next until none remain
+# Calculates mileage and time based on distance (18mph average)
 # This runs in O(n^2) due to the dominant time complexity of the truck's unload function
 def truckDeliverPackages(truck, startTime):
+    # Timestamp all packages on departure, assign to truck
     for item in truck.packages:
         packageHash.search(item.packageID).departTime = startTime.time()
         packageHash.search(item.packageID).truck = truck.name
     currentAddress = hubAddress
     miles = 0
-    # elapsed = datetime.timedelta(hours=0, minutes=0, seconds=0)
+    # Deliver nearest until empty, O(n) complexity
     while len(truck.packages) > 0:
         trip = minDistance(currentAddress, truck.packages)
         currentAddress = trip[0]
@@ -97,28 +101,29 @@ def truckDeliverPackages(truck, startTime):
     truck.returnTime = time
 
 
-def packageStatus(ID, time):
-    item = packageHash.search(ID)
-    return item.statusAt(time)
-
-
-# check
+# User Interface starts with user input 1-5. While loop until Quit
 selection = input("1. Deliver Packages\n2. View Package Status at Time\n"
                   "3. View All Package Statuses at a Time\n4. Review Mileage\n5. Quit\n")
 while selection != "5":
     packageNum = None
     timeInput = None
+    # O(n^2) due to deliverPackage Algo complexity
     if selection == "1":
+        # Only deliver 1 time
         if delivered == 0:
             truckDeliverPackages(truck1, truck1Start)
             truckDeliverPackages(truck2, truck2Start)
             truckDeliverPackages(truck3, truck3Start)
             delivered = 1
+    # View Package Status [O(1) complexity]
     elif selection == "2":
+        # User input for package #. Must be valid package
         try:
             packageNum = input("Enter Package ID to view its status: ")
+            # O(1) search
             package = packageHash.search(int(packageNum))
             packageID = package.packageID
+            # User input for time. Must be HH:MM
             try:
                 timeInput = input("Enter the time at which you would like to see its status: (HH:MM , 00:00 - 23:59)")
                 hours, minutes = timeInput.split(':')
@@ -129,7 +134,7 @@ while selection != "5":
                 print("Invalid Time Format. Please use HH:MM , 00:00 - 23:59")
         except:
             print("Invalid Package ID")
-
+    # O(n log(n)) complexity to sort the displayTable
     elif selection == "3":
         try:
             timeInput = input("Enter the time at which you would like to see its status: (HH:MM , 00:00 - 23:59)")
@@ -140,12 +145,14 @@ while selection != "5":
             for bucket in packageHash.table:
                 for key, value in bucket:
                     displayTable.append((key, value))
-                    sortedTable = sorted(displayTable, key=lambda x: int(x[0]))
+            # Sort displayTable for ease of user review
+            sortedTable = sorted(displayTable, key=lambda x: int(x[0]))
             for i in sortedTable:
                 print("Package: " + str(i[0]) + " has status: " + i[1].statusAt(
                     dateTimeParsed.time()) + " at " + timeInput)
         except:
             print("Invalid Time Format. Please use HH:MM , 00:00 - 23:59")
+    # O(1) complexity to retrieve truck mileages
     elif selection == "4":
 
         print("Truck 1 Mileage: " + str(truck1.miles))
@@ -155,6 +162,7 @@ while selection != "5":
         print("End")
     else:
         print("Invalid Input. Please choose a number 1-5")
+    # Prints the prompt for user again and returns to the start of while loop
     print("---------------------------------------")
     selection = input("1. Deliver Packages\n2. View Package Status at Time\n"
                       "3. View All Package Statuses at a Time\n4. Review Mileage\n5. Quit\n")
